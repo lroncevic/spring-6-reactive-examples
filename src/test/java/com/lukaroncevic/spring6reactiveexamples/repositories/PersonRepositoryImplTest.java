@@ -87,4 +87,24 @@ class PersonRepositoryImplTest {
 
         fionaMono.subscribe(person -> System.out.println(person.getFirstName()));
     }
+
+    @Test
+    void findPersonByIdNotFound() {
+        Flux<Person> personFlux = personRepository.findAll();
+
+        final Integer id = 0;
+
+        Mono<Person> personMono = personFlux.filter(person -> person.getId() == id).single()
+                .doOnError(throwable -> {
+                    System.out.println("Error occured in flux");
+                    System.out.println(throwable.toString());
+                });
+
+        personMono.subscribe(person -> {
+            System.out.println(person.toString());
+        }, throwable -> {
+            System.out.println("Error occured in the mono");
+            System.out.println(throwable.toString());
+        });
+    }
 }
